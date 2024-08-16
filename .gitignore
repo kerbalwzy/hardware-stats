@@ -1,3 +1,12 @@
+# Project custom
+hardware-stats.yaml
+nuitka-crash-report.xml
+main.dist/
+main.build/
+main.onefile-build/
+*.exe
+temp
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
