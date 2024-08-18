@@ -474,11 +474,17 @@ class Disk(sensors.Disk):
 
     @staticmethod
     def used() -> int:  # In bytes
-        return psutil.disk_usage("/").used
+        used = 0
+        for part in psutil.disk_partitions():
+            used += psutil.disk_usage(part.mountpoint).used
+        return used
 
     @staticmethod
     def free() -> int:  # In bytes
-        return psutil.disk_usage("/").free
+        free = 0
+        for part in psutil.disk_partitions():
+            free += psutil.disk_usage(part.mountpoint).free
+        return free
 
 
 class Net(sensors.Net):
