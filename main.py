@@ -1,51 +1,45 @@
 # coding:utf-8
 # hareware-stats.py: Write hardware status data in a loop to a local YAML format file for other programs to read and use
 import argparse
+import atexit
 import os
+import gc
 import shutil
+import signal
 import sys
 import time
 import tempfile
 import platform
 import ruamel.yaml
-import atexit
-import signal
-from runtime_util import require_run_as_admin, get_socket_lock
+
+from runtime_util import require_runas_admin, require_runas_unique
 from log import logger
 
-# Get socket
-socket = get_socket_lock()
+TEMP_DIR = tempfile.TemporaryDirectory()
 
 
-def safe_exit():
-    """在进程退出时执行的清理函数"""
-    socket.close()
+def safe_exit(signum=None, frame=None):
+    logger.info(f"Received signal {signum}, cleaning up...")
+    TEMP_DIR.cleanup()
     try:
         sys.exit(0)
     except:
         os._exit(0)
 
 
-def handle_signal(signum, frame):
-    """信号处理函数"""
-    print(f"Received signal {signum}, cleaning up...")
-    safe_exit()
-
-
 # 注册退出时要执行的清理函数
 atexit.register(safe_exit)
 # 捕获终止信号
-signal.signal(signal.SIGTERM, handle_signal)
-signal.signal(signal.SIGINT, handle_signal)  # Ctrl+C
+signal.signal(signal.SIGTERM, safe_exit)
+signal.signal(signal.SIGINT, safe_exit)  # Ctrl+C
+
+require_runas_unique()
 
 if platform.system() == "Windows":  # Windows-specific
-    require_run_as_admin()
+    require_runas_admin()
     from sensors_librehardwaremonitor import Cpu, Gpu, Memory, Disk, Net
 else:
     from sensors_python import Cpu, Gpu, Memory, Disk, Net
-
-import atexit
-import signal
 
 
 def run():
@@ -60,8 +54,9 @@ def run():
     )
     args = parser.parse_args()
     #
-    logger.info("start get stats")
-    temp_path = os.path.join(tempfile.gettempdir(), "temp-hardware-stats")
+    logger.info("start get stats...")
+    temp_path = os.path.join(TEMP_DIR.name, "temp-hardware-stats")
+    loop_count = 0
     while True:
         with open(temp_path, "w", encoding="utf-8") as tmp_file:
             # CPU
@@ -129,9 +124,12 @@ def run():
             ruamel.yaml.YAML().dump(data, tmp_file)
         shutil.move(temp_path, "./hardware-stats.yaml")
         # sleep interval
-        time.sleep(args.interval)
-        # break
-
+        loop_count += 1
+        # 每万次手动进行一次垃圾回收
+        if loop_count % 10000 == 0:
+            gc.collect()
+        else:
+            time.sleep(args.interval)
 
 if __name__ == "__main__":
     try:
