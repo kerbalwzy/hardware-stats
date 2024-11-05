@@ -1,9 +1,0 @@
-2024/11/5 21:14:09 [INFO] Found CPU: 12th Gen Intel Core i3-12100F
-2024/11/5 21:14:09 [INFO] Found Memory: Generic Memory
-2024/11/5 21:14:09 [INFO] Found Nvidia GPU: NVIDIA GeForce GTX 1660 SUPER
-2024/11/5 21:14:09 [INFO] Found Storage: GALAX QA1M0512F
-2024/11/5 21:14:09 [INFO] Found Network interface: 以太网
-2024/11/5 21:14:09 [INFO] start get stats...
-2024/11/5 21:14:15 [INFO] Received signal 2, cleaning up...
-2024/11/5 21:14:15 [ERROR] [WinError 267] 目录名称无效。: 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\tmpiydlrvl5\\temp-hardware-stats'
-2024/11/5 21:14:15 [INFO] Received signal None, cleaning up...

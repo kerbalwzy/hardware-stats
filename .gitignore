@@ -8,6 +8,7 @@ main.onefile-build/
 temp
 test.py
 .DS_Store
+log.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
