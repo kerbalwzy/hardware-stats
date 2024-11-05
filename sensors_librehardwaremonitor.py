@@ -11,13 +11,13 @@ from win32api import * # type: ignore
 
 import sensors as sensors
 from log import logger
-
+from consts import EXEC_PATH
 # Import LibreHardwareMonitor dll to Python
-lhm_dll = os.getcwd() + "\\external\\LibreHardwareMonitor\\LibreHardwareMonitorLib.dll"
+lhm_dll = EXEC_PATH + "\\external\\LibreHardwareMonitor\\LibreHardwareMonitorLib.dll"
 # noinspection PyUnresolvedReferences
 clr.AddReference(lhm_dll)
 # noinspection PyUnresolvedReferences
-clr.AddReference(os.getcwd() + "\\external\\LibreHardwareMonitor\\HidSharp.dll")
+clr.AddReference(EXEC_PATH + "\\external\\LibreHardwareMonitor\\HidSharp.dll")
 # noinspection PyUnresolvedReferences
 from LibreHardwareMonitor import Hardware  # type: ignore
 

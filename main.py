@@ -14,6 +14,7 @@ import ruamel.yaml
 
 from runtime_util import require_runas_admin, require_runas_unique
 from log import logger
+from consts import STATE_PATH
 
 TEMP_DIR = tempfile.TemporaryDirectory()
 
@@ -122,7 +123,7 @@ def run():
             }
             # logger.info(data)
             ruamel.yaml.YAML().dump(data, tmp_file)
-        shutil.move(temp_path, "./hardware-stats.yaml")
+        shutil.move(temp_path, STATE_PATH)
         # sleep interval
         loop_count += 1
         # 每万次手动进行一次垃圾回收
